@@ -11,4 +11,5 @@ reqwest = { version = "0.10", features = ["json"] }
 tokio = { version = "0.2", features = ["full"] }
 serde = { version = "1.0.114", features = ["derive"] }
 async-recursion = "0.3.1"
+clap = "2.33.1"
 
