@@ -1,5 +1,7 @@
 # Watch HN
 
+[![WatchHN Crates](https://img.shields.io/crates/v/watchhn)](https://crates.io/crates/watchhn)
+
 CLI tool (Rust) to watch hackernews for new comments and keywords
 
 Supports output to console and notification to slack.
@@ -7,6 +9,8 @@ Supports output to console and notification to slack.
 ## Run
 
 `cargo install watchhn`
+
+or
 
 [Download](https://github.com/monokh/watchhn/releases) (mac & windows)
 
