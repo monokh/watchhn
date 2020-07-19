@@ -1,8 +1,15 @@
 [package]
 name = "watchhn"
+license = "MIT"
 version = "0.1.0"
 authors = ["monokh <mnokhb@gmail.com>"]
 edition = "2018"
+description = "Watch hackernews for new comments and keywords"
+readme = "README.md"
+homepage = "https://github.com/monokh/watchhn"
+repository = "https://github.com/monokh/watchhn"
+keywords = ["hackernews", "cli", "watch", "comments", "keywords"]
+categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
