@@ -16,3 +16,13 @@ pub struct Post {
     pub time: u32,
     pub r#type: String
 }
+
+impl Post {
+    pub fn link (&self) -> String {
+        return format!("https://news.ycombinator.com/item?id={}", self.id);
+    }
+
+    pub fn context_link (&self, root: u32) -> String {
+        return format!("https://news.ycombinator.com/item?id={}#{}", root, self.id);
+    } 
+}

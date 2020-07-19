@@ -6,16 +6,18 @@ use crate::post::Post;
 
 pub struct PostWatch {
     id: u32,
-    hook_url: String,
+    hook_url: Option<String>,
+    interval: u32,
     posts: HashMap<u32, Post>,
     initialised: bool,
 }
 
 impl PostWatch {
-    pub fn new (id: u32, hook_url: String) -> PostWatch {
+    pub fn new (id: u32, hook_url: Option<String>, interval: u32) -> PostWatch {
         return PostWatch {
             id,
             hook_url,
+            interval,
             posts: HashMap::new(),
             initialised: false
         }
@@ -31,8 +33,8 @@ impl PostWatch {
                         let new = self.initialised && !self.posts.contains_key(&id);
                         self.posts.insert(post.id, post.clone());
                         if new {
-                            println!("Found new: {}", post.id);
-                            self.send_to_slack(post.id).await?;
+                            println!("Found new comment: {}", post.context_link(self.id));
+                            if self.hook_url.is_some() { self.send_to_slack(post.id).await? }
                         };
                         for id in post.kids {
                             self.process_post(id).await?;
@@ -47,12 +49,10 @@ impl PostWatch {
     }
 
     async fn send_to_slack(&self, id: u32) -> Result<(), Box<dyn std::error::Error>> {
-        let post_link = format!("https://news.ycombinator.com/item?id={}", self.id);
-        let post_title = self.posts.get(&self.id).unwrap().title.clone();
+        let post = self.posts.get(&self.id).unwrap();
         let context = self.posts.get(&id).unwrap();
         let mut quote = context.text.clone();
         quote.truncate(100);
-        let context_link = format!("https://news.ycombinator.com/item?id={}#{}", self.id, id);
         let body = format!("{{
             \"blocks\": [
                 {{
@@ -63,9 +63,9 @@ impl PostWatch {
                     }}
                 }}
             ]
-        }}", post_link, post_title, quote, context_link);
+        }}", post.link(), post.title, quote, context.context_link(self.id));
         let client = reqwest::Client::new();
-        client.post(&self.hook_url)
+        client.post(self.hook_url.as_ref().unwrap())
             .body(body)
             .send()
             .await?;
@@ -78,7 +78,7 @@ impl PostWatch {
         self.initialised = true;
         println!("Indexing Done. Watching {} for changes...", self.id);
         loop {
-            let duration = time::Duration::from_secs(10);
+            let duration = time::Duration::from_secs(self.interval as u64);
             thread::sleep(duration);
             self.process_post(self.id).await?;
         }
