@@ -6,6 +6,8 @@ CLI tool (Rust) to watch hackernews for new comments and keywords
 
 Supports output to console and notification to slack.
 
+![screenshot](https://github.com/monokh/watchhn/raw/master/screenshot.png)
+
 ## Run
 
 `cargo install watchhn`
